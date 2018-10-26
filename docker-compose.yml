@@ -41,7 +41,7 @@ services:
     image: linuxserver/sonarr
     container_name: sonarr
     volumes:
-      - /mnt/downloads:/downloads
+      - /mnt/downloads/nzbget:/downloads
       - /mnt/downloads/utorrent:/utorrent/data
       - /mnt/series:/tv
       - /mnt/4k2/anime:/anime
