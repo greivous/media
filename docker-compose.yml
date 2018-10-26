@@ -61,28 +61,6 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  radarr:
-    image: linuxserver/radarr
-    container_name: radarr
-    volumes:
-      - /mnt/downloads/nzbget:/downloads
-      - /mnt/4k1/movies:/movies
-      - radarr_settings:/config
-    environment:
-      PUID: 999
-      PGID: 998
-      TZ: Africa/Johannesburg
-    ports:
-      - 8003:7878
-    networks:
-      - media
-    restart: always
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
   nzbget:
     image: linuxserver/nzbget
     container_name: nzbget
