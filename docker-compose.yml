@@ -1,0 +1,137 @@
+version: '3'
+services:
+  portainer:
+    image: portainer/portainer
+    container_name: portainer
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_settings:/data
+    ports:
+      - 8000:9000
+    networks:
+      - media
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  muximux:
+    image: linuxserver/muximux
+    container_name: muximux
+    volumes:
+      - muximux_settings:/config
+    environment:
+      PUID: 999
+      PGID: 998
+      TZ: Africa/Johannesburg
+    ports:
+      - 8001:80
+    networks:
+      - media
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  sonarr:
+    image: linuxserver/sonarr
+    container_name: sonarr
+    volumes:
+      - /mnt/downloads:/downloads
+      - /mnt/downloads/utorrent:/utorrent/data
+      - /mnt/series:/tv
+      - /mnt/4k2/anime:/anime
+      - sonarr_settings:/config
+    environment:
+      PUID: 999
+      PGID: 998
+      TZ: Africa/Johannesburg
+    ports:
+      - 8002:8989
+    networks:
+      - media
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  radarr:
+    image: linuxserver/radarr
+    container_name: radarr
+    volumes:
+      - /mnt/downloads/nzbget:/downloads
+      - /mnt/4k1/movies:/movies
+      - radarr_settings:/config
+    environment:
+      PUID: 999
+      PGID: 998
+      TZ: Africa/Johannesburg
+    ports:
+      - 8003:7878
+    networks:
+      - media
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  nzbget:
+    image: linuxserver/nzbget
+    container_name: nzbget
+    volumes:
+      - /mnt/downloads/nzbget:/downloads
+      - nzbget_settings:/config
+    environment:
+      PUID: 999
+      PGID: 998
+      TZ: Africa/Johannesburg
+    ports:
+      - 8004:6789
+    networks:
+      - media
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  utorrent:
+    image: ekho/utorrent:latest
+    container_name: utorrent
+    volumes:
+      - /mnt/downloads/utorrent:/utorrent/data
+      - utorrent_settings:/utorrent/settings
+    environment:
+      HOST_UID: 999
+      HOST_GID: 998
+    ports:
+      - 8005:8080
+      - 6881:6881
+    networks:
+      - media
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  media:
+
+volumes:
+  utorrent_settings:
+  sonarr_settings:
+  nzbget_settings:
+  portainer_settings:
+  muximux_settings:
+  radarr_settings:
