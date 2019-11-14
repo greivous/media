@@ -45,6 +45,7 @@ services:
       - /mnt/downloads/utorrent:/utorrent/data
       - /mnt/series:/tv
       - /mnt/4k2/anime:/anime
+      - /mnt/4k2/AnimeArchive:/AnimeArchive
       - sonarr_settings:/config
     environment:
       PUID: 999
@@ -61,28 +62,6 @@ services:
         max-size: "10m"
         max-file: "3"
         
-#  couchpotato:
-#    image: linuxserver/couchpotato
-#    container_name: couchpotato
-#    volumes:
-#      - couchpotato_settings:/config
-#      - /mnt/downloads/nzbget:/downloads
-#      - /mnt/4k1/movies:/movies
-#    environment:
-#      PUID: 999
-#      PGID: 998
-#      TZ: Africa/Johannesburg
-#    ports:
-#      - 8003:5050
-#    networks:
-#      - media
-#    restart: always
-#    logging:
-#      driver: "json-file"
-#      options:
-#        max-size: "10m"
-#        max-file: "3"
-
   nzbget:
     image: linuxserver/nzbget
     container_name: nzbget
@@ -125,6 +104,44 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  cloudcmd:
+    image: coderaiser/cloudcmd:latest
+    container_name: cloudcmd
+    volumes:
+      - ~:/root
+      - /:/mnt/fs
+    environment:
+      HOST_UID: 999
+      HOST_GID: 998
+    ports:
+      - 8006:8000
+    networks:
+      - media
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  netdata:
+    image: netdata/netdata
+    container_name: netdata
+    hostname: zoom # set to fqdn of host
+    restart: always
+    environment:
+      PGID: 999
+    ports:
+      - 19999:19999
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
 networks:
   media:
 
@@ -134,4 +151,3 @@ volumes:
   nzbget_settings:
   portainer_settings:
   muximux_settings:
-  couchpotato_settings:
